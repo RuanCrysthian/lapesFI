@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from 'pg';
+import pool from '../database/db';
 import { Capability } from './capability';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -19,47 +19,33 @@ export class Resource {
     this.resourceEnvironment = resourceEnvironment;
   }
 
-  addCapability(capability: Capability): void {
-    this.capabilities.push(capability);
-  }
-
   // Função para salvar um recurso no banco de dados
   async save(): Promise<void> {
-    const pool = new Pool();
-    const client = await pool.connect();
+    const queryText =
+      'INSERT INTO resource (uuid, description, resource_environment) VALUES ($1, $2, $3)';
+    const values = [this.uuid, this.description, this.resourceEnvironment];
 
     try {
-      await client.query('BEGIN');
-
-      const queryText =
-        'INSERT INTO resources (uuid, description, resource_environment) VALUES ($1, $2, $3)';
-      const values = [this.uuid, this.description, this.resourceEnvironment];
-
+      const client = await pool.connect();
       await client.query(queryText, values);
-
-      // Salvar as capacidades do recurso
       for (const capability of this.capabilities) {
         const capabilityQueryText =
-          'INSERT INTO capabilities (capability_uuid, name, value, resource_uuid) VALUES ($1, $2, $3, $4)';
+          'INSERT INTO capability (capability_uuid, name, value, resource_uuid) VALUES ($1, $2, $3, $4)';
         const capabilityValues = [
           capability.capability_uuid,
           capability.name,
           capability.value,
           this.uuid,
         ];
-
         await client.query(capabilityQueryText, capabilityValues);
       }
-
-      await client.query('COMMIT');
-    } catch (error) {
-      await client.query('ROLLBACK');
-      throw error;
-    } finally {
       client.release();
+    } catch (error) {
+      console.error('Erro ao salvar o Resource:', error);
+      throw error;
     }
   }
-
+  /*
   // Função para deletar um recurso no banco de dados
   static async delete(uuid: string): Promise<void> {
     const pool = new Pool();
@@ -165,4 +151,5 @@ export class Resource {
       client.release();
     }
   }
+  */
 }
