@@ -24,7 +24,18 @@ export class ResourceController {
     } catch (error) {
       res
         .status(500)
-        .json({ error: 'Erro ao criar recurso no banco de dados' });
+        .json({ error: 'An error occurred while creating the resources' });
+    }
+  }
+
+  static async getAllResource(req: Request, res: Response) {
+    try {
+      const resources = await Resource.getAll();
+      res.status(200).json(resources);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the resources' });
     }
   }
 }
