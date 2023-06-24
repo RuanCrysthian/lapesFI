@@ -95,7 +95,7 @@ export class Resource {
       client.release();
     }
   }
-  /*
+
   // Função para deletar um recurso no banco de dados
   static async delete(uuid: string): Promise<void> {
     const client = await pool.connect();
@@ -122,52 +122,54 @@ export class Resource {
       client.release();
     }
   }
-  
+
   // Função para obter um recurso filtrado por ID
   static async getByID(uuid: string): Promise<Resource | null> {
     const client = await pool.connect();
 
     try {
-      const queryText = 'SELECT * FROM resources WHERE uuid = $1';
-      const values = [uuid];
-      const result: QueryResult = await client.query(queryText, values);
+      const queryText = `
+        SELECT r.uuid, r.description, r.resource_environment,
+          c.capability_uuid, c.name, c.value
+        FROM resource r
+        LEFT JOIN capability c ON r.uuid = c.resource_uuid
+        WHERE r.uuid = $1
+      `;
+      const result: QueryResult = await client.query(queryText, [uuid]);
 
-      if (result.rows.length === 0) {
-        return null;
+      const resourceMap: Map<string, Resource> = new Map();
+
+      for (const row of result.rows) {
+        const resourceUuid = row.uuid;
+
+        if (!resourceMap.has(resourceUuid)) {
+          const resource = new Resource(
+            row.description,
+            [],
+            row.resource_environment,
+          );
+          resource.uuid = resourceUuid;
+          resourceMap.set(resourceUuid, resource);
+        }
+
+        if (row.capability_uuid && resourceMap.has(resourceUuid)) {
+          const capability = {
+            capability_uuid: row.capability_uuid,
+            name: row.name,
+            value: row.value,
+          };
+          resourceMap.get(resourceUuid)?.capabilities.push(capability);
+        }
       }
 
-      const row = result.rows[0];
-
-      const resource = new Resource(
-        row.description,
-        [],
-        row.resource_environment,
-      );
-      resource.uuid = row.uuid;
-
-      // Obter as capacidades do recurso
-      const capabilityQueryText =
-        'SELECT * FROM capabilities WHERE resource_uuid = $1';
-      const capabilityValues = [uuid];
-      const capabilityResult: QueryResult = await client.query(
-        capabilityQueryText,
-        capabilityValues,
-      );
-
-      for (const capabilityRow of capabilityResult.rows) {
-        const capability = new Capability(
-          capabilityRow.name,
-          capabilityRow.value,
-        );
-        capability.capability_uuid = capabilityRow.capability_uuid;
-
-        resource.capabilities.push(capability);
-      }
+      const resource = Array.from(resourceMap.values())[0] || null;
 
       return resource;
+    } catch (error) {
+      console.error('Erro ao recuperar o Resource:', error);
+      throw error;
     } finally {
       client.release();
     }
   }
-  */
 }
