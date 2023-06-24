@@ -38,4 +38,23 @@ export class ResourceController {
         .json({ error: 'An error occurred while retrieving the resources' });
     }
   }
+
+  static async getResourceByUUID(req: Request, res: Response) {
+    try {
+      const { uuid } = req.params; // Extrai o parâmetro UUID da requisição
+
+      const resource = await Resource.getByID(uuid);
+
+      if (resource) {
+        res.status(200).json(resource);
+      } else {
+        res.status(404).json({ error: 'Resource not found' });
+      }
+    } catch (error) {
+      console.error('Error retrieving the resource:', error);
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the resource' });
+    }
+  }
 }
