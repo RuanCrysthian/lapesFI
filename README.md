@@ -100,7 +100,24 @@ Parâmetros de rota:
 
 - uuid: O UUID do Resource.
 
-TODO
+EXEMPLO
+
+`GET /resource/207cd829-a1b6-4162-a26f-3eec4c9d0ad4 `
+
+```
+{
+	"uuid": "207cd829-a1b6-4162-a26f-3eec4c9d0ad4",
+	"description": "A public bus 2",
+	"capabilities": [
+		{
+			"capability_uuid": "ec313a48-3009-4bfe-8308-5a008cd42701",
+			"name": "temperature",
+			"value": 25
+		}
+	],
+	"resourceEnvironment": "Indoor"
+}
+```
 
 `DELETE /resources/{uuid}`
 
