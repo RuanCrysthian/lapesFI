@@ -13,68 +13,85 @@ export class ErrorController {
       const { uuid, type_of_error, error_duration } = req.body;
       const resource = await Resource.getByID(uuid);
 
-      if (resource != null) {
-        const capabilities = resource?.capabilities;
-        let error;
-
-        for (const capability of capabilities) {
-          switch (type_of_error) {
-            case 'bias':
-              error = new Error(
-                uuid,
-                new Bias(),
-                error_duration,
-                capability.value,
-              );
-              break;
-            case 'drift':
-              error = new Error(
-                uuid,
-                new Drift(),
-                error_duration,
-                capability.value,
-              );
-              break;
-            case 'loss accuracy':
-              error = new Error(
-                uuid,
-                new LossAccuracy(),
-                error_duration,
-                capability.value,
-              );
-              break;
-            case 'calibration error':
-              error = new Error(
-                uuid,
-                new CalibrationError(),
-                error_duration,
-                capability.value,
-              );
-              break;
-            case 'freezing':
-              error = new Error(
-                uuid,
-                new Freezing(),
-                error_duration,
-                capability.value,
-              );
-              break;
-            default:
-              res.status(500).json({ error: 'Type of Error does exist!' });
-              break;
-          }
-          await error?.save();
-        }
-        res.status(201).json({ message: 'Error was injected!' });
-      } else {
-        res.status(500).json({ error: 'Resource not found!' });
+      if (!resource) {
+        res.status(404).json({ error: 'Resource not found!' });
         return;
       }
+
+      const capabilities = resource.capabilities;
+      const errorInstances = [];
+
+      for (const capability of capabilities) {
+        let errorInstance;
+
+        switch (type_of_error) {
+          case 'bias':
+            errorInstance = new Error(
+              uuid,
+              new Bias(),
+              error_duration,
+              capability.value,
+            );
+            break;
+          case 'drift':
+            errorInstance = new Error(
+              uuid,
+              new Drift(),
+              error_duration,
+              capability.value,
+            );
+            break;
+          case 'loss accuracy':
+            errorInstance = new Error(
+              uuid,
+              new LossAccuracy(),
+              error_duration,
+              capability.value,
+            );
+            break;
+          case 'calibration error':
+            errorInstance = new Error(
+              uuid,
+              new CalibrationError(),
+              error_duration,
+              capability.value,
+            );
+            break;
+          case 'freezing':
+            errorInstance = new Error(
+              uuid,
+              new Freezing(),
+              error_duration,
+              capability.value,
+            );
+            break;
+          default:
+            res.status(400).json({ error: 'Invalid type of error!' });
+            return;
+        }
+
+        errorInstances.push(errorInstance);
+      }
+
+      await Promise.all(errorInstances.map((error) => error.save()));
+
+      res.status(201).json({ message: 'Error was injected!' });
     } catch (error) {
       console.error('Error retrieving the resource:', error);
       res
         .status(500)
         .json({ error: 'An error occurred while retrieving the resource' });
+    }
+  }
+
+  static async getAllErrors(req: Request, res: Response) {
+    try {
+      const errors = await Error.getAll();
+      res.status(200).json(errors);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the Erros' });
     }
   }
 }
