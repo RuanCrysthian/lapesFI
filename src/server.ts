@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import resourceRoutes from './routes/resourceRoutes';
+import errorRoutes from './routes/errorRoutes';
 
 const app = express();
 const port = 3000;
@@ -12,6 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/resources', resourceRoutes);
+app.use('/errors', errorRoutes);
 
 app.listen(port, () => {
   console.log(`Server on http://localhost:${port}`);
