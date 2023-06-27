@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { TypeOfError } from './type_of_error';
 import pool from '../database/db';
+import { Freezing } from './freezing';
+import { CalibrationError } from './calibration_error';
+import { Bias } from './bias';
+import { Drift } from './drift';
+import { LossAccuracy } from './loss_accuracy';
 
 export class Error {
   error_uuid: string;
@@ -51,5 +56,77 @@ export class Error {
       console.error('Erro ao salvar o Error:', error);
       throw error;
     }
+  }
+
+  static async getAll(): Promise<Error[]> {
+    const client = await pool.connect();
+    const errors: Error[] = [];
+
+    try {
+      const queryText = 'SELECT * FROM error';
+      const result = await client.query(queryText);
+
+      if (result && result.rows.length > 0) {
+        for (const row of result.rows) {
+          let error: Error | null = null;
+
+          switch (row.type_of_error) {
+            case 'bias':
+              error = new Error(
+                row.resource_uuid,
+                new Bias(),
+                row.error_duration,
+                parseFloat(row.capability_value),
+              );
+              break;
+            case 'drift':
+              error = new Error(
+                row.resource_uuid,
+                new Drift(),
+                row.error_duration,
+                parseFloat(row.capability_value),
+              );
+              break;
+            case 'loss accuracy':
+              error = new Error(
+                row.resource_uuid,
+                new LossAccuracy(),
+                row.error_duration,
+                parseFloat(row.capability_value),
+              );
+              break;
+            case 'calibration error':
+              error = new Error(
+                row.resource_uuid,
+                new CalibrationError(),
+                row.error_duration,
+                parseFloat(row.capability_value),
+              );
+              break;
+            case 'freezing':
+              error = new Error(
+                row.resource_uuid,
+                new Freezing(),
+                row.error_duration,
+                parseFloat(row.capability_value),
+              );
+              break;
+            default:
+              console.warn('Tipo de erro desconhecido:', row.type_of_error);
+          }
+
+          if (error) {
+            errors.push(error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao recuperar o Error:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+
+    return errors;
   }
 }
