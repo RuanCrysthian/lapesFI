@@ -94,4 +94,23 @@ export class ErrorController {
         .json({ error: 'An error occurred while retrieving the Erros' });
     }
   }
+
+  static async getErrorByUUID(req: Request, res: Response) {
+    try {
+      const { uuid } = req.params;
+      const erro = await Error.getErrorsByResourceUUID(uuid);
+      console.log(erro);
+
+      if (erro) {
+        res.status(200).json(erro);
+      } else {
+        res.status(404).json({ error: 'Error not found' });
+      }
+    } catch (error) {
+      console.error('Error retrieving the resource:', error);
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the Error' });
+    }
+  }
 }
