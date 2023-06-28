@@ -207,7 +207,7 @@ Parâmetros de rota:
 
 EXEMPLO
 
-`GET /resources/33864b89-7b24-4a73-960a-f6b9e1e8661f `
+`GET /errors/33864b89-7b24-4a73-960a-f6b9e1e8661f `
 
 ```
 [
