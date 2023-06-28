@@ -31,13 +31,8 @@ export class Resource {
       await client.query(queryText, values);
       for (const capability of this.capabilities) {
         const capabilityQueryText =
-          'INSERT INTO capability (capability_uuid, name, value, resource_uuid) VALUES ($1, $2, $3, $4)';
-        const capabilityValues = [
-          capability.capability_uuid,
-          capability.name,
-          capability.value,
-          this.uuid,
-        ];
+          'INSERT INTO capability (name, value, resource_uuid) VALUES ($1, $2, $3)';
+        const capabilityValues = [capability.name, capability.value, this.uuid];
         await client.query(capabilityQueryText, capabilityValues);
       }
       client.release();
@@ -53,8 +48,7 @@ export class Resource {
 
     try {
       const queryText = `
-        SELECT r.uuid, r.description, r.resource_environment,
-          c.capability_uuid, c.name, c.value
+        SELECT r.uuid, r.description, r.resource_environment, c.name, c.value
         FROM resource r
         LEFT JOIN capability c ON r.uuid = c.resource_uuid
       `;
@@ -75,9 +69,8 @@ export class Resource {
           resourceMap.set(resourceUuid, resource);
         }
 
-        if (row.capability_uuid && resourceMap.has(resourceUuid)) {
+        if (resourceMap.has(resourceUuid)) {
           const capability = {
-            capability_uuid: row.capability_uuid,
             name: row.name,
             value: row.value,
           };
@@ -129,8 +122,7 @@ export class Resource {
 
     try {
       const queryText = `
-        SELECT r.uuid, r.description, r.resource_environment,
-          c.capability_uuid, c.name, c.value
+        SELECT r.uuid, r.description, r.resource_environment, c.name, c.value
         FROM resource r
         LEFT JOIN capability c ON r.uuid = c.resource_uuid
         WHERE r.uuid = $1
@@ -152,9 +144,8 @@ export class Resource {
           resourceMap.set(resourceUuid, resource);
         }
 
-        if (row.capability_uuid && resourceMap.has(resourceUuid)) {
+        if (resourceMap.has(resourceUuid)) {
           const capability = {
-            capability_uuid: row.capability_uuid,
             name: row.name,
             value: row.value,
           };
