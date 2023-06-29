@@ -30,9 +30,8 @@ export class Error {
   }
 
   public injectError(): number {
-    const result = this.type_of_error.adjustValueCapability(
-      this.capability_value,
-    );
+    // eslint-disable-next-line prettier/prettier
+    const result = this.type_of_error.adjustValueCapability(this.capability_value);
     return result;
   }
 
@@ -53,7 +52,7 @@ export class Error {
       await client.query(queryText, values);
       client.release();
     } catch (error) {
-      console.error('Erro ao salvar o Error:', error);
+      console.error('Failed to save Error:', error);
       throw error;
     }
   }
@@ -112,7 +111,7 @@ export class Error {
               );
               break;
             default:
-              console.warn('Tipo de erro desconhecido:', row.type_of_error);
+              console.warn('Unknown error type:', row.type_of_error);
           }
 
           if (error) {
@@ -121,7 +120,7 @@ export class Error {
         }
       }
     } catch (error) {
-      console.error('Erro ao recuperar o Error:', error);
+      console.error('Failed to retrieve error:', error);
       throw error;
     } finally {
       client.release();
@@ -184,7 +183,7 @@ export class Error {
               );
               break;
             default:
-              console.warn('Tipo de erro desconhecido:', row.type_of_error);
+              console.warn('Unknown error type:', row.type_of_error);
           }
 
           if (error) {
@@ -193,7 +192,7 @@ export class Error {
         }
       }
     } catch (error) {
-      console.error('Erro ao recuperar os Erros:', error);
+      console.error('failed to retrieve error:', error);
       throw error;
     } finally {
       client.release();

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Error } from '../models/error';
 import { Request, Response } from 'express';
 import { Resource } from '../models/resource';
@@ -26,12 +27,7 @@ export class ErrorController {
 
         switch (type_of_error) {
           case 'bias':
-            errorInstance = new Error(
-              uuid,
-              new Bias(),
-              error_duration,
-              capability.value,
-            );
+            errorInstance = new Error(uuid, new Bias(), error_duration, capability.value);
             break;
           case 'drift':
             errorInstance = new Error(
@@ -78,9 +74,7 @@ export class ErrorController {
       res.status(201).json({ message: 'Error was injected!' });
     } catch (error) {
       console.error('Error retrieving the resource:', error);
-      res
-        .status(500)
-        .json({ error: 'An error occurred while retrieving the resource' });
+      res.status(500).json({ error: 'An error occurred while retrieving the resource' });
     }
   }
 
@@ -89,9 +83,7 @@ export class ErrorController {
       const errors = await Error.getAll();
       res.status(200).json(errors);
     } catch (error) {
-      res
-        .status(500)
-        .json({ error: 'An error occurred while retrieving the Erros' });
+      res.status(500).json({ error: 'An error occurred while retrieving the Erros' });
     }
   }
 
@@ -99,7 +91,6 @@ export class ErrorController {
     try {
       const { uuid } = req.params;
       const erro = await Error.getErrorsByResourceUUID(uuid);
-      console.log(erro);
 
       if (erro) {
         res.status(200).json(erro);
@@ -108,9 +99,7 @@ export class ErrorController {
       }
     } catch (error) {
       console.error('Error retrieving the resource:', error);
-      res
-        .status(500)
-        .json({ error: 'An error occurred while retrieving the Error' });
+      res.status(500).json({ error: 'An error occurred while retrieving the Error' });
     }
   }
 }

@@ -16,5 +16,5 @@ app.use('/resources', resourceRoutes);
 app.use('/errors', errorRoutes);
 
 app.listen(port, () => {
-  console.log(`Server on http://localhost:${port}`);
+  console.log(`Server on ${port}`);
 });

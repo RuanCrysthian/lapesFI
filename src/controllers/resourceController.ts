@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Resource } from '../models/resource';
 import { Request, Response } from 'express';
 import { Capability } from '../models/capability';
@@ -22,9 +23,7 @@ export class ResourceController {
 
       res.status(201).json(resource);
     } catch (error) {
-      res
-        .status(500)
-        .json({ error: 'An error occurred while creating the resources' });
+      res.status(500).json({ error: 'An error occurred while creating the resources' });
     }
   }
 
@@ -33,9 +32,7 @@ export class ResourceController {
       const resources = await Resource.getAll();
       res.status(200).json(resources);
     } catch (error) {
-      res
-        .status(500)
-        .json({ error: 'An error occurred while retrieving the resources' });
+      res.status(500).json({ error: 'An error occurred while retrieving the resources' });
     }
   }
 
@@ -52,9 +49,7 @@ export class ResourceController {
       }
     } catch (error) {
       console.error('Error retrieving the resource:', error);
-      res
-        .status(500)
-        .json({ error: 'An error occurred while retrieving the resource' });
+      res.status(500).json({ error: 'An error occurred while retrieving the resource' });
     }
   }
 }

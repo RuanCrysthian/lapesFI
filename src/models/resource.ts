@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { QueryResult } from 'pg';
 import pool from '../database/db';
 import { Capability } from './capability';
@@ -42,7 +43,6 @@ export class Resource {
     }
   }
 
-  // Função para obter todos os recursos do banco de dados
   static async getAll(): Promise<Resource[]> {
     const client = await pool.connect();
 
@@ -60,11 +60,7 @@ export class Resource {
         const resourceUuid = row.uuid;
 
         if (!resourceMap.has(resourceUuid)) {
-          const resource = new Resource(
-            row.description,
-            [],
-            row.resource_environment,
-          );
+          const resource = new Resource(row.description, [], row.resource_environment);
           resource.uuid = resourceUuid;
           resourceMap.set(resourceUuid, resource);
         }
@@ -89,14 +85,12 @@ export class Resource {
     }
   }
 
-  // Função para deletar um recurso no banco de dados
   static async delete(uuid: string): Promise<void> {
     const client = await pool.connect();
 
     try {
       // Deletar as capacidades do recurso
-      const capabilityQueryText =
-        'DELETE FROM capabilities WHERE resource_uuid = $1';
+      const capabilityQueryText = 'DELETE FROM capabilities WHERE resource_uuid = $1';
       const capabilityValues = [uuid];
 
       await client.query(capabilityQueryText, capabilityValues);
@@ -116,7 +110,6 @@ export class Resource {
     }
   }
 
-  // Função para obter um recurso filtrado por ID
   static async getByID(uuid: string): Promise<Resource | null> {
     const client = await pool.connect();
 
@@ -135,11 +128,7 @@ export class Resource {
         const resourceUuid = row.uuid;
 
         if (!resourceMap.has(resourceUuid)) {
-          const resource = new Resource(
-            row.description,
-            [],
-            row.resource_environment,
-          );
+          const resource = new Resource(row.description, [], row.resource_environment);
           resource.uuid = resourceUuid;
           resourceMap.set(resourceUuid, resource);
         }
