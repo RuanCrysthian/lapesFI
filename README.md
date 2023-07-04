@@ -17,9 +17,24 @@ O LapesFI é uma API REST desenvolvida como parte de um projeto da FAPESP, relac
   - Calibration Error
 - Avaliação da resiliência e confiabilidade dos dados de sensores.
 
+## Dependências
+
+- docker
+- docker-compose
+
 ## Deploy
 
-TODO
+Criar os contêineres
+
+`sudo docker-compose build`
+
+Subir os contêineres
+
+`sudo docker-compose up`
+
+Para verificar se os contêineres estão rodando
+
+`sudo docker ps`
 
 ## Endpoints
 
