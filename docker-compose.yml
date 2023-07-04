@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: lapesFI
     ports:
-      - '3000:3000'
+      - '4000:4000'
     depends_on:
       - db
     env_file:
@@ -18,8 +18,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 
-      POSTGRES_DB: mydatabase
+      POSTGRES_PASSWORD: admin 
+      POSTGRES_DB: lapesfi
     volumes:
       - postgres-data:/var/lib/postgresql/data
 volumes:
