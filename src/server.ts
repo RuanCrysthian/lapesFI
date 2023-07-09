@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import resourceRoutes from './routes/resourceRoutes';
 import errorRoutes from './routes/errorRoutes';
-import sensor_valuesRoutes from './routes/sensor_valueRoutes';
+import capabilitiesRoutes from './routes/capabilityRoutes';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 app.use('/resources', resourceRoutes);
 app.use('/errors', errorRoutes);
-app.use('/capabilities', sensor_valuesRoutes);
+app.use('/capabilities', capabilitiesRoutes);
 
 app.listen(port, () => {
   console.log(`Server on ${port}`);
