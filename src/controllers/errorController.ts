@@ -7,7 +7,7 @@ import { Drift } from '../models/drift';
 import { LossAccuracy } from '../models/loss_accuracy';
 import { CalibrationError } from '../models/calibration_error';
 import { Freezing } from '../models/freezing';
-
+/*
 export class ErrorController {
   static async create(req: Request, res: Response): Promise<void> {
     try {
@@ -103,3 +103,4 @@ export class ErrorController {
     }
   }
 }
+*/
