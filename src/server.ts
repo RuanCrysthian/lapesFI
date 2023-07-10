@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import resourceRoutes from './routes/resourceRoutes';
-import errorRoutes from './routes/errorRoutes';
+import faultRoutes from './routes/FaultRoutes';
 import capabilitiesRoutes from './routes/capabilityRoutes';
 import * as dotenv from 'dotenv';
 
@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/resources', resourceRoutes);
-app.use('/errors', errorRoutes);
+app.use('/faults', faultRoutes);
 app.use('/capabilities', capabilitiesRoutes);
 
 app.listen(port, () => {
