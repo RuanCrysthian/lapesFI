@@ -6,6 +6,13 @@ export class LossAccuracy implements TypeOfError {
     this.type = 'loss accuracy';
   }
   adjustValueCapability(value: number): number {
-    return value + 5;
+    const randomOperator = Math.random() < 0.5 ? '+' : '_';
+    const randomValue = Math.floor(Math.random() * 5) + 1;
+
+    if (randomOperator === '+') {
+      return value + randomValue;
+    } else {
+      return value - randomValue;
+    }
   }
 }
