@@ -20,13 +20,12 @@ export async function up(knex: Knex): Promise<void> {
 
   console.log('Create the Capability table');
 
-  await knex.schema.createTable('error', function (table) {
-    table.string('error_uuid').primary();
-    table.string('resource_uuid').unsigned();
+  await knex.schema.createTable('fault', function (table) {
+    table.string('capability_uuid').unsigned();
     table.string('type_of_error');
-    table.decimal('capability_value', 10, 3);
-    table.decimal('capability_error', 10, 3);
-    table.foreign('resource_uuid').references('resource.uuid');
+    table.decimal('sensor_value', 10, 3);
+    table.decimal('sensor_error', 10, 3);
+    table.foreign('capability_uuid').references('capability.uuid');
   });
 
   console.log('Create the Error table');
