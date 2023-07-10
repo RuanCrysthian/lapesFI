@@ -21,8 +21,8 @@ export class ResourceController {
       await resource.save();
       res.status(201).json(resource);
     } catch (error) {
-      console.error('Erro ao salvar os dados:', error);
-      res.status(500).json({ error: 'Erro ao salvar os dados' });
+      console.error('Error saving data:', error);
+      res.status(500).json({ error: 'Error saving data' });
     }
   }
 
@@ -37,7 +37,7 @@ export class ResourceController {
 
   static async getResourceByUUID(req: Request, res: Response) {
     try {
-      const { uuid } = req.params; // Extrai o parâmetro UUID da requisição
+      const { uuid } = req.params;
 
       const resource = await Resource.getByID(uuid);
 
@@ -55,34 +55,26 @@ export class ResourceController {
   static async deleteResource(req: Request, res: Response) {
     try {
       const { uuid } = req.params;
-      console.log(uuid);
 
       await Resource.delete(uuid);
 
-      res.sendStatus(204); // No Content
+      res.sendStatus(204);
     } catch (error) {
-      console.error('Erro ao excluir o recurso:', error);
-      res.status(500).json({ error: 'Erro ao excluir o recurso' });
+      console.error('Error deleting resource:', error);
+      res.status(500).json({ error: 'Error deleting resource' });
     }
   }
 
-  
   static async saveSensorData(req: Request, res: Response): Promise<void> {
     const { uuid } = req.params;
     const { capability_uuid, sensor_values } = req.body;
-
-    console.log(uuid, capability_uuid);
   
     try {
-      // Verificar se o recurso existe
       const resource = await Resource.getByID(uuid);
-      console.log(resource);
       if (!resource) {
-        res.status(404).json({ error: 'Recurso não encontrado' });
+        res.status(404).json({ error: 'Resource not found' });
         return;
       }
-  
-      // Verificar se a capacidade existe no recurso
       let sensorCapability;
       for (const capability of resource.capabilities) {
         if (capability.uuid === capability_uuid && capability.function === 'sensor') {
@@ -92,7 +84,7 @@ export class ResourceController {
       }
   
       if (!sensorCapability) {
-        res.status(400).json({ error: 'Recurso não possui a capacidade de sensor especificada' });
+        res.status(400).json({ error: 'Resource does not have the specified capacity' });
         return;
       }
   
@@ -103,7 +95,6 @@ export class ResourceController {
       for (const sensorValueData of sensor_values) {
         const { value, date } = sensorValueData;
         const sensorValue = new SensorValue(value, date, sensorCapability.uuid);
-        console.log(sensorValue);
   
         const sensorValueInsertValues = [
           sensorValue.capability_uuid,
@@ -111,14 +102,13 @@ export class ResourceController {
           sensorValue.date,
         ];
         
-        console.log(sensorValueInsertValues);
         await pool.query(sensorValueInsertQuery, sensorValueInsertValues);
       }
   
       res.status(200).json({ success: true });
     } catch (error) {
-      console.error('Erro ao salvar os valores do sensor:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      console.error('Error saving sensor values:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
   
