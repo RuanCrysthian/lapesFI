@@ -6,6 +6,7 @@ export class Drift implements TypeOfError {
     this.type = 'drift';
   }
   adjustValueCapability(value: number): number {
-    return value + 10;
+    const randomValue = Math.floor(Math.random() * 5) + 2;
+    return value - randomValue;
   }
 }
