@@ -4,18 +4,18 @@
 
 ## Visão Geral
 
-O LapesFI é uma API REST desenvolvida como parte de um projeto da FAPESP, relacionado a criação de um injetor de erros em aplicações de Cidades Inteligentes. Essa API foi desenvolvida com o objetivo de fornecer funcionalidades para a injeção de erros controlados em sistemas baseados no middleware InterSCity.
+O LapesFI é uma API REST desenvolvida como parte de um projeto da FAPESP, relacionado à criação de um injetor de erros em aplicações de Cidades Inteligentes. Essa API foi criada com o objetivo de fornecer funcionalidades para a injeção de erros controlados, permitindo a simulação e o teste de cenários de falhas em sistemas de Cidades Inteligentes.
 
 ## Funcionalidades Principais
 
-- Injeção de erros controlados na plataforma InterSCity
+- Injeção de erros controlados.
 - Simulação de diferentes tipos de falhas, incluindo:
   - Bias
   - Drift
   - Loss of Accuracy
   - Freezing
   - Calibration Error
-- Avaliação da resiliência e confiabilidade dos dados de sensores.
+- Possibilidade de testar mecanismos de validação e recuperação de dados corrompidos.
 
 ## Dependências
 
@@ -32,7 +32,7 @@ Subir os contêineres
 
 `sudo docker-compose up`
 
-Para verificar se os contêineres estão rodando
+Para verificar se os contêineres:
 
 `sudo docker ps`
 
@@ -40,7 +40,7 @@ Para verificar se os contêineres estão rodando
 
 ### Resources
 
-`POST /resources`
+**`POST /resources`**
 
 Descrição: Cria um novo Resource e suas Capabilities.
 
@@ -48,32 +48,28 @@ Parâmetros:
 
 - `description` (obrigatório): uma breve descrição do Resource.
 - `capabilities` (obrigatório): são as capabilities que o Resource possui.
-- `resourceEnvironment` (obrigatório): é o ambiente que o Resource se encontra.
+- `location` (obrigatório): localização que o Resource se encontra.
 
 EXEMPLO
 
 ```
 {
-  "description": "Environment temperature monitor",
+  "description": "Environment Monitor",
   "capabilities": [
     {
       "name": "temperature",
-      "value": 30
+      "description": "Measure the temperature"
     },
-		{
-      "name": "temperature",
-      "value": 30.8
-    },
-		{
-      "name": "temperature",
-      "value": 31
+    {
+      "name": "humidity",
+      "description": "Measure the temperature"
     }
   ],
-  "resourceEnvironment": "Departamento de Computação UFSCar"
+  "location": "Departamento de Computação UFSCar"
 }
 ```
 
-`GET /resources`
+**`GET /resources`**
 
 Descrição: Retorna a lista de Resources cadastrados.
 
@@ -82,216 +78,265 @@ EXEMPLO
 ```
 [
   {
-		"uuid": "207cd829-a1b6-4162-a26f-3eec4c9d0ad4",
-		"description": "A public bus 1",
-		"capabilities": [
-			{
-				"capability_uuid": "ec313a48-3009-4bfe-8308-5a008cd42701",
-				"name": "temperature",
-				"value": 25
-			}
-		],
-		"resourceEnvironment": "Avenida São Carlos"
+    "uuid": "883f12a5-ace0-4ff4-b6db-404b944e8a4e",
+    "description": "Environment Monitor",
+    "capabilities": [
+      {
+        "uuid": "7b76b4dc-1e4d-4d7b-ac78-513be20b5875",
+        "name": "humidity",
+        "function": "sensor",
+        "description": "Environment Monitor"
+      },
+      {
+      "uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+      "name": "temperature",
+      "function": "sensor",
+      "description": "Environment Monitor"
+      }
+    ],
+    "location": "Departamento de Computação UFSCar"
 	},
-	{
-	"uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-	"description": "Environment temperature monitor",
-	"capabilities": [
-		{
-			"name": "temperature",
-			"value": 30
-		},
-		{
-			"name": "temperature",
-			"value": 30.8
-		},
-		{
-			"name": "temperature",
-			"value": 31
-		}
-	],
-	"resourceEnvironment": "Departamento de Computação UFSCar"
-}
+  {
+    "uuid": "4a723ead-c7f1-4479-b6d4-6c43c3bc4b31",
+    "description": "Temperature Monitor",
+    "capabilities": [
+      {
+      "uuid": "76cdc37b-1e4a-4527-9f59-507259493e0e",
+      "name": "temperature",
+      "function": "sensor",
+      "description": "Temperature Monitor"
+      }
+    ],
+    "location": "Departamento de Computação UFSCar"
+  }
 ]
 ```
 
-`GET /resources/{uuid}`
+**`GET /resources/{uuid}`**
 
-Descrição: Retorna os detalhes de um Resource específico.
+Descrição: Retorna um Resource específico.
 
 Parâmetros de rota:
 
-- uuid: O UUID do Resource.
+- `uuid`: O UUID do Resource.
 
 EXEMPLO
 
-`GET /resources/33864b89-7b24-4a73-960a-f6b9e1e8661f `
+**`GET /resources/883f12a5-ace0-4ff4-b6db-404b944e8a4e `**
 
 ```
 {
-	"uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-	"description": "Environment temperature monitor",
-	"capabilities": [
-		{
-			"name": "temperature",
-			"value": 30
-		},
-		{
-			"name": "temperature",
-			"value": 30.8
-		},
-		{
-			"name": "temperature",
-			"value": 31
-		}
-	],
-	"resourceEnvironment": "Departamento de Computação UFSCar"
+  "uuid": "883f12a5-ace0-4ff4-b6db-404b944e8a4e",
+  "description": "Environment Monitor",
+  "capabilities": [
+    {
+      "uuid": "7b76b4dc-1e4d-4d7b-ac78-513be20b5875",
+      "name": "humidity",
+      "function": "sensor",
+      "description": "Environment Monitor"
+    },
+    {
+      "uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+      "name": "temperature",
+      "function": "sensor",
+      "description": "Environment Monitor"
+    }
+  ],
+  "location": "Departamento de Computação UFSCar"
 }
 ```
 
-### Erros
+**`DELETE /resources/{uuid}`**
 
-`POST /errors`
+Descrição: Deleta um Resource específico.
 
-Descrição: Injeta erros em um determinado Resource.
+Parâmetros de rota:
+
+- `uuid`: O UUID do Resource.
+
+EXEMPLO
+
+`DELETE /resources/883f12a5-ace0-4ff4-b6db-404b944e8a4e `
+
+
+**`POST /resources/{uuid}/data`**
+
+Descrição: Envia os valores do sensor de uma Capability de um determinado Resource.
+
+Parâmetro de rota:
+  - `uuid`: UUID do Resource
+
+Parâmetros:
+  - `capability_uuid`: UUID da Capability
+  - `value`: valor do sensor.
+  - `date`: data de envio no formato: "YYYY-MM-DDTHH:MMZ"
+
+EXEMPLO
+
+`POST /resources/883f12a5-ace0-4ff4-b6db-404b944e8a4e/data`
+
+```
+{
+  "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+  "sensor_values": [
+    {
+      "value": 10,
+      "date": "2023-07-09T12:00Z"
+    },
+    {
+      "value": 11,
+      "date": "2023-07-09T12:01Z"
+    },
+    {
+      "value": 12,
+      "date": "2023-07-09T12:02Z"
+    }
+  ]
+}
+```
+
+### Capability
+
+**`GET /capabilities/{uuid}/data `**
+
+Descrição: Retorna todos os dados de uma determinada Capability.
+
+Parâmetro de rota:
+  - `uuid`: UUID da Capability
+
+EXEMPLO:
+
+`GET capabilities/04025dee-a676-48c7-996e-6c3999454a07/data`
+
+```
+[
+  {
+    "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+    "sensor_values": [
+      {
+        "value": "10.000",
+        "date": "2023-07-09T12:00Z"
+      },
+      {
+        "value": "11.000",
+        "date": "2023-07-09T12:01Z"
+      },
+      {
+        "value": "12.000",
+        "date": "2023-07-09T12:02Z"
+      }
+    ]
+  }
+]
+```
+
+
+### Fault 
+
+`POST /faults`
+
+Descrição: Injeta erros em uma determinada Capability.
 
 Parâmetros:
 
-- `uuid` (obrigatório): é o uuid de um Resource já criado.
-- `type_of_error` (obrigatório): é o tipo de erro que será injeta nos valores da Capability do Resource.
-- `error_duration` (obrigatório): ???
+- `uuid` (obrigatório): é o uuid de uma Capability já criada.
+- `type_of_error` (obrigatório): é o tipo de erro que será injetado nos valores da Capability.
 
 EXEMPLO
 
 ```
 {
-	"uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-	"type_of_error": "loss accuracy",
-	"error_duration": 11
+  "uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+  "type_of_error": "freezing"
 }
 ```
 
-`GET /errors`
+`GET /faults`
 
-Descrição: Retorna a lista de Errors cadastrados.
+Descrição: Retorna a lista de Faults cadastrados.
 
 EXEMPLO
 
 ```
 [
-	{
-		"error_uuid": "21ca2581-da4e-46fc-9584-750434c5f312",
-		"resource_uuid": "4456a0c5-d7eb-4232-b51a-0ab9427e4245",
-		"type_of_error": {
-			"type": "loss accuracy"
-		},
-		"error_duration": 11,
-		"capability_value": 25,
-		"capability_error": 30
-	},
-	{
-		"error_uuid": "ecebf8b6-4a31-4651-9f74-e3165aa93c70",
-		"resource_uuid": "4456a0c5-d7eb-4232-b51a-0ab9427e4245",
-		"type_of_error": {
-			"type": "loss accuracy"
-		},
-		"error_duration": 11,
-		"capability_value": 26,
-		"capability_error": 31
-	},
-	{
-		"error_uuid": "aa32a824-10e4-441d-8af4-6721be3767ff",
-		"resource_uuid": "4456a0c5-d7eb-4232-b51a-0ab9427e4245",
-		"type_of_error": {
-			"type": "loss accuracy"
-		},
-		"error_duration": 11,
-		"capability_value": 25.1,
-		"capability_error": 30.1
-	}
+  {
+    "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+    "type_of_error": {
+      "type": "freezing"
+    },
+    "sensor_value": 10,
+    "sensor_error": 15
+  },
+  {
+    "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+    "type_of_error": {
+      "type": "freezing"
+    },
+    "sensor_value": 11,
+    "sensor_error": 15
+  },
+  {
+    "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+    "type_of_error": {
+      "type": "freezing"
+    },
+    "sensor_value": 12,
+    "sensor_error": 15
+  }
 ]
 ```
 
-`GET /errors/{uuid}`
+**`GET /faults/{uuid}`**
 
-Descrição: Retorna os Errors de um determinado Resource por seu uuid.
+Descrição: Retorna os Faults de uma determinada Capability por seu uuid.
 
 Parâmetros de rota:
 
-- uuid: O UUID do Resource.
+- `uuid`: O UUID da Capability.
 
 EXEMPLO
 
-`GET /errors/33864b89-7b24-4a73-960a-f6b9e1e8661f `
+`GET /errors/04025dee-a676-48c7-996e-6c3999454a07 `
 
 ```
 [
-	{
-		"error_uuid": "3934eefc-ccaa-4d1f-848d-59ac4cd5fc24",
-		"resource_uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-		"type_of_error": {
-			"type": "loss accuracy"
-		},
-		"error_duration": 11,
-		"capability_value": 30,
-		"capability_error": 35
-	},
-	{
-		"error_uuid": "12e92f5d-68c1-46b1-b85a-d8479890d5be",
-		"resource_uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-		"type_of_error": {
-			"type": "loss accuracy"
-		},
-		"error_duration": 11,
-		"capability_value": 30.8,
-		"capability_error": 35.8
-	},
-	{
-		"error_uuid": "68846b21-5b28-467c-8f17-194f04bfc7ed",
-		"resource_uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-		"type_of_error": {
-			"type": "loss accuracy"
-		},
-		"error_duration": 11,
-		"capability_value": 31,
-		"capability_error": 36
-	},
-	{
-		"error_uuid": "0175f324-c771-4040-857b-316841b13ace",
-		"resource_uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-		"type_of_error": {
-			"type": "bias"
-		},
-		"error_duration": 11,
-		"capability_value": 30,
-		"capability_error": 33
-	},
-	{
-		"error_uuid": "8def8781-80f0-4a61-8265-e0d803946064",
-		"resource_uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-		"type_of_error": {
-			"type": "bias"
-		},
-		"error_duration": 11,
-		"capability_value": 30.8,
-		"capability_error": 33.8
-	},
-	{
-		"error_uuid": "7ffc55f5-fbec-4018-b47e-ab5b5412d52c",
-		"resource_uuid": "33864b89-7b24-4a73-960a-f6b9e1e8661f",
-		"type_of_error": {
-			"type": "bias"
-		},
-		"error_duration": 11,
-		"capability_value": 31,
-		"capability_error": 34
-	}
+  {
+    "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+    "type_of_error": {
+      "type": "freezing"
+    },
+    "sensor_value": 10,
+    "sensor_error": 15
+  },
+  {
+    "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+    "type_of_error": {
+      "type": "freezing"
+    },
+    "sensor_value": 11,
+    "sensor_error": 15
+  },
+  {
+    "capability_uuid": "04025dee-a676-48c7-996e-6c3999454a07",
+    "type_of_error": {
+      "type": "freezing"
+    },
+    "sensor_value": 12,
+    "sensor_error": 15
+  }
 ]
 ```
 
-## Autenticação
+**`DELETE faults/{uuid}`**
 
-TODO
+Descrição: Deleta os dados de uma determinado UUID da Capability
+
+Parâmetros de rota:
+- `uuid`: O UUID da Capability.
+
+EXEMPLO
+
+`DELETE faults/04025dee-a676-48c7-996e-6c3999454a07`
 
 ## Contribuição
 
