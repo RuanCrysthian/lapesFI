@@ -6,6 +6,7 @@ export class Bias implements TypeOfError {
     this.type = 'bias';
   }
   adjustValueCapability(value: number): number {
-    return value + 3;
+    const randomValue = Math.floor(Math.random() * 3) + 1;
+    return value + randomValue;
   }
 }
