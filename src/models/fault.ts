@@ -26,6 +26,9 @@ export class Fault {
   public injectError(): number {
     // eslint-disable-next-line prettier/prettier
     const result = this.type_of_error.adjustValueCapability(this.sensor_value);
+    if (this.type_of_error.type === 'freezing') {
+      return 15;
+    }
     return result;
   }
 
