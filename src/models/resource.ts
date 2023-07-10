@@ -141,23 +141,16 @@ export class Resource {
 
     try {
       await client.query('BEGIN');
-
-      // Deletar as capacidades do recurso
-      console.log('entrei no delete');
       const capabilityQueryText =
         'DELETE FROM capability WHERE resource_uuid = $1';
       const capabilityValues = [uuid];
       await client.query(capabilityQueryText, capabilityValues);
-
-      console.log('estou deletando resource');
-      // Deletar o recurso
       const queryText = 'DELETE FROM resource WHERE uuid = $1';
       const values = [uuid];
       await client.query(queryText, values);
 
       await client.query('COMMIT');
     } catch (error) {
-      console.log('estou no catch');
       await client.query('ROLLBACK');
       throw error;
     } finally {
