@@ -38,7 +38,6 @@ export class FaultController {
               intensity,
               sensor_value.value,
             );
-            console.log(errorInstance);
             break;
           case 'drift':
             errorInstance = new Fault(

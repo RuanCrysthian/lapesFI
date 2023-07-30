@@ -42,14 +42,11 @@ export class Fault {
       this.sensor_date >= this.inital_date &&
       this.sensor_date <= this.final_date
     ) {
-      console.log('to no if');
       if (this.type_of_error.type === 'freezing') result = 20;
       else result = this.type_of_error.adjustValueCapability(this.sensor_value);
     } else {
-      console.log('to no else');
       result = this.sensor_value;
     }
-    console.log(this.sensor_value, result);
     return result;
   }
 
