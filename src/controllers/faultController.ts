@@ -8,12 +8,14 @@ import { CalibrationError } from '../models/calibration_error';
 import { Freezing } from '../models/freezing';
 import { Capability } from '../models/capability';
 
-
 export class FaultController {
   static async create(req: Request, res: Response): Promise<void> {
     try {
-      const { uuid, type_of_error } = req.body;
-      const capabilities = await Capability.getSensorValuesByCapabilityUUID(uuid);
+      const { uuid, type_of_error, initial_date, final_date, intensity } =
+        req.body;
+      const capabilities = await Capability.getSensorValuesByCapabilityUUID(
+        uuid,
+      );
 
       if (!capabilities) {
         res.status(404).json({ error: 'Capability not found!' });
@@ -21,18 +23,31 @@ export class FaultController {
       }
       const sensor_values = capabilities[0].sensor_values;
       const errorInstances = [];
-      
+
       for (const sensor_value of sensor_values) {
         let errorInstance;
 
         switch (type_of_error) {
           case 'bias':
-            errorInstance = new Fault(uuid, new Bias(), sensor_value.value);
+            errorInstance = new Fault(
+              uuid,
+              new Bias(),
+              sensor_value.date,
+              initial_date,
+              final_date,
+              intensity,
+              sensor_value.value,
+            );
+            console.log(errorInstance);
             break;
           case 'drift':
             errorInstance = new Fault(
               uuid,
               new Drift(),
+              sensor_value.date,
+              initial_date,
+              final_date,
+              intensity,
               sensor_value.value,
             );
             break;
@@ -40,6 +55,10 @@ export class FaultController {
             errorInstance = new Fault(
               uuid,
               new LossAccuracy(),
+              sensor_value.date,
+              initial_date,
+              final_date,
+              intensity,
               sensor_value.value,
             );
             break;
@@ -47,6 +66,10 @@ export class FaultController {
             errorInstance = new Fault(
               uuid,
               new CalibrationError(),
+              sensor_value.date,
+              initial_date,
+              final_date,
+              intensity,
               sensor_value.value,
             );
             break;
@@ -54,6 +77,10 @@ export class FaultController {
             errorInstance = new Fault(
               uuid,
               new Freezing(),
+              sensor_value.date,
+              initial_date,
+              final_date,
+              intensity,
               sensor_value.value,
             );
             break;
@@ -70,19 +97,23 @@ export class FaultController {
       res.status(201).json({ message: 'Fault was injected!' });
     } catch (error) {
       console.error('Error retrieving the capability:', error);
-      res.status(500).json({ error: 'An error occurred while retrieving the capability' });
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the capability' });
     }
   }
-  
+
   static async getAllFault(req: Request, res: Response) {
     try {
       const errors = await Fault.getAll();
       res.status(200).json(errors);
     } catch (error) {
-      res.status(500).json({ error: 'An error occurred while retrieving the Erros' });
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the Erros' });
     }
   }
-  
+
   static async getFaultByUUID(req: Request, res: Response) {
     try {
       const { uuid } = req.params;
@@ -95,7 +126,9 @@ export class FaultController {
       }
     } catch (error) {
       console.error('Error retrieving the resource:', error);
-      res.status(500).json({ error: 'An error occurred while retrieving the Error' });
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the Error' });
     }
   }
 
@@ -109,5 +142,4 @@ export class FaultController {
       res.status(500).json({ error: 'Error deleting the Fault' });
     }
   }
-  
 }
