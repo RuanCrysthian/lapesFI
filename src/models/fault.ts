@@ -9,35 +9,60 @@ import { LossAccuracy } from './loss_accuracy';
 export class Fault {
   capability_uuid: string;
   type_of_error: TypeOfError;
+  sensor_date: string;
+  inital_date: string;
+  final_date: string;
+  intensity: number;
   sensor_value: number;
   sensor_error: number;
 
   constructor(
     capability_uuid: string,
     type_of_error: TypeOfError,
+    sensor_date: string,
+    inital_date: string,
+    final_date: string,
+    intensity: number,
     sensor_value: number,
   ) {
     this.capability_uuid = capability_uuid;
     this.type_of_error = type_of_error;
+    this.sensor_date = sensor_date;
+    this.inital_date = inital_date;
+    this.final_date = final_date;
+    this.intensity = intensity;
     this.sensor_value = sensor_value;
     this.sensor_error = this.injectError();
   }
 
+  // TODO: verificar se está entre o tempo de inicio e final para que assim seja injetado os erros.
   public injectError(): number {
-    // eslint-disable-next-line prettier/prettier
-    const result = this.type_of_error.adjustValueCapability(this.sensor_value);
-    if (this.type_of_error.type === 'freezing') {
-      return 15;
+    let result: number;
+    if (
+      this.sensor_date >= this.inital_date &&
+      this.sensor_date <= this.final_date
+    ) {
+      console.log('to no if');
+      if (this.type_of_error.type === 'freezing') result = 66;
+      else result = this.type_of_error.adjustValueCapability(this.sensor_value);
+    } else {
+      console.log('to no else');
+      result = this.sensor_value;
     }
+    console.log(this.sensor_value, result);
     return result;
   }
 
   public async save(): Promise<void> {
     const queryText =
-      'INSERT INTO fault (capability_uuid, type_of_error, sensor_value, sensor_error) VALUES ($1, $2, $3, $4)';
+      'INSERT INTO fault (capability_uuid, type_of_error, sensor_date, initial_date, final_date, intensity, sensor_value, sensor_error) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
     const values = [
       this.capability_uuid,
       this.type_of_error.type,
+      this.sensor_date,
+      this.inital_date,
+      this.final_date,
+      this.intensity,
       this.sensor_value,
       this.sensor_error,
     ];
@@ -69,6 +94,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new Bias(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -76,6 +105,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new Drift(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -83,6 +116,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new LossAccuracy(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -90,6 +127,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new CalibrationError(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -97,6 +138,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new Freezing(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -138,6 +183,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new Bias(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -145,6 +194,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new Drift(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -152,6 +205,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new LossAccuracy(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -159,6 +216,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new CalibrationError(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
@@ -166,6 +227,10 @@ export class Fault {
               fault = new Fault(
                 row.capability_uuid,
                 new Freezing(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                row.intensity,
                 parseFloat(row.sensor_value),
               );
               break;
