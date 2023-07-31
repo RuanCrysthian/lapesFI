@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 const config: Knex.Config = {
   client: 'pg',
   connection: {
-    host: 'localhost',
+    host: 'db',
     port: 5432,
     user: 'postgres',
     password: 'admin',
