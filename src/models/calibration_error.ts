@@ -5,8 +5,7 @@ export class CalibrationError implements TypeOfError {
   constructor() {
     this.type = 'calibration error';
   }
-  adjustValueCapability(value: number): number {
-    const randomValue = Math.floor(Math.random() * 3) + 1;
-    return value * randomValue;
+  adjustValueCapability(value: number, intensity: number): number {
+    return value * (intensity / 5);
   }
 }

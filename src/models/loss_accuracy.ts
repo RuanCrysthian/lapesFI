@@ -5,14 +5,13 @@ export class LossAccuracy implements TypeOfError {
   constructor() {
     this.type = 'loss accuracy';
   }
-  adjustValueCapability(value: number): number {
+  adjustValueCapability(value: number, intensity: number): number {
     const randomOperator = Math.random() < 0.5 ? '+' : '_';
-    const randomValue = Math.floor(Math.random() * 5) + 1;
 
     if (randomOperator === '+') {
-      return value + randomValue;
+      return value + intensity;
     } else {
-      return value - randomValue;
+      return value - intensity;
     }
   }
 }

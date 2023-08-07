@@ -43,7 +43,11 @@ export class Fault {
       this.sensor_date <= this.final_date
     ) {
       if (this.type_of_error.type === 'freezing') result = 20;
-      else result = this.type_of_error.adjustValueCapability(this.sensor_value);
+      else
+        result = this.type_of_error.adjustValueCapability(
+          this.sensor_value,
+          this.intensity,
+        );
     } else {
       result = this.sensor_value;
     }
@@ -94,7 +98,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -105,7 +109,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -116,7 +120,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -127,7 +131,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -138,7 +142,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -183,7 +187,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -194,7 +198,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -205,7 +209,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -216,7 +220,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
@@ -227,7 +231,7 @@ export class Fault {
                 row.sensor_date,
                 row.initial_date,
                 row.final_date,
-                row.intensity,
+                parseFloat(row.intensity),
                 parseFloat(row.sensor_value),
               );
               break;
