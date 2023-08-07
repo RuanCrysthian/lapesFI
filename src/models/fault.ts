@@ -83,7 +83,7 @@ export class Fault {
     const faults: Fault[] = [];
 
     try {
-      const queryText = 'SELECT * FROM fault';
+      const queryText = 'SELECT * FROM fault ORDER BY sensor_date ASC';
       const result = await client.query(queryText);
 
       if (result && result.rows.length > 0) {
@@ -172,7 +172,8 @@ export class Fault {
     const faults: Fault[] = [];
 
     try {
-      const queryText = 'SELECT * FROM fault WHERE capability_uuid = $1';
+      const queryText =
+        'SELECT * FROM fault WHERE capability_uuid = $1 ORDER BY sensor_date ASC';
       const result = await client.query(queryText, [capability_uuid]);
 
       if (result && result.rows.length > 0) {
