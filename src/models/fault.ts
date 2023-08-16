@@ -10,7 +10,7 @@ export class Fault {
   capability_uuid: string;
   type_of_error: TypeOfError;
   sensor_date: string;
-  inital_date: string;
+  initial_date: string;
   final_date: string;
   intensity: number;
   sensor_value: number;
@@ -20,7 +20,7 @@ export class Fault {
     capability_uuid: string,
     type_of_error: TypeOfError,
     sensor_date: string,
-    inital_date: string,
+    initial_date: string,
     final_date: string,
     intensity: number,
     sensor_value: number,
@@ -28,18 +28,27 @@ export class Fault {
     this.capability_uuid = capability_uuid;
     this.type_of_error = type_of_error;
     this.sensor_date = sensor_date;
-    this.inital_date = inital_date;
+    this.validateTimestamp(initial_date);
+    this.validateTimestamp(final_date);
+    this.initial_date = initial_date;
     this.final_date = final_date;
     this.intensity = intensity;
     this.sensor_value = sensor_value;
     this.sensor_error = this.injectError();
   }
 
-  // TODO: verificar se está entre o tempo de inicio e final para que assim seja injetado os erros.
+  private validateTimestamp(timestamp: string): void {
+    const timestampRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/;
+
+    if (!timestampRegex.test(timestamp)) {
+      throw new Error('Invalid timestamp');
+    }
+  }
+
   public injectError(): number {
     let result: number;
     if (
-      this.sensor_date >= this.inital_date &&
+      this.sensor_date >= this.initial_date &&
       this.sensor_date <= this.final_date
     ) {
       if (this.type_of_error.type === 'freezing') result = 20;
@@ -61,7 +70,7 @@ export class Fault {
       this.capability_uuid,
       this.type_of_error.type,
       this.sensor_date,
-      this.inital_date,
+      this.initial_date,
       this.final_date,
       this.intensity,
       this.sensor_value,

@@ -14,7 +14,7 @@ export class SensorValue {
     const timestampRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/;
 
     if (!timestampRegex.test(timestamp)) {
-      throw new Error('O valor do timestamp é inválido');
+      throw new Error('Invalid timestamp');
     }
   }
 }
