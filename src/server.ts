@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import resourceRoutes from './routes/resourceRoutes';
 import faultRoutes from './routes/FaultRoutes';
 import capabilitiesRoutes from './routes/capabilityRoutes';
+import interscityRoutes from './routes/interscityRoutes';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 app.use('/resources', resourceRoutes);
 app.use('/faults', faultRoutes);
 app.use('/capabilities', capabilitiesRoutes);
+app.use('/interscity', interscityRoutes);
 
 app.listen(port, () => {
   console.log(`Server on ${port}`);
