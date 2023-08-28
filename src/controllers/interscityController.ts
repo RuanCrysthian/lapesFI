@@ -105,7 +105,6 @@ export class InterscityController {
 
         errorInstances.push(errorInstance);
       }
-      console.log(errorInstances);
       await Promise.all(errorInstances.map((error) => error.save()));
 
       res.status(201).json({ message: 'Fault was injected!' });
@@ -125,6 +124,35 @@ export class InterscityController {
       res
         .status(500)
         .json({ error: 'An error occurred while retrieving the Erros' });
+    }
+  }
+
+  static async getFaultByUUID(req: Request, res: Response) {
+    try {
+      const { uuid } = req.params;
+      const fault = await InterscityFault.getFaultsByResourceUuid(uuid);
+
+      if (fault) {
+        res.status(200).json(fault);
+      } else {
+        res.status(404).json({ error: 'Fault not found' });
+      }
+    } catch (error) {
+      console.error('Error retrieving the resource:', error);
+      res
+        .status(500)
+        .json({ error: 'An error occurred while retrieving the Error' });
+    }
+  }
+
+  static async deleteFault(req: Request, res: Response) {
+    try {
+      const { uuid } = req.params;
+      await InterscityFault.deleteByResourceUUID(uuid);
+      res.sendStatus(204);
+    } catch (error) {
+      console.error('Error deleting the Fault:', error);
+      res.status(500).json({ error: 'Error deleting the Fault' });
     }
   }
 }

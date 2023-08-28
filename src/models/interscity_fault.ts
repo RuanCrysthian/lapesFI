@@ -176,4 +176,113 @@ export class InterscityFault {
 
     return faults;
   }
+
+  static async getFaultsByResourceUuid(
+    resource_uuid: string,
+  ): Promise<InterscityFault[]> {
+    const client = await pool.connect();
+    const faults: InterscityFault[] = [];
+
+    try {
+      const queryText =
+        'SELECT * FROM interscity_fault WHERE resource_uuid = $1 ORDER BY sensor_date ASC';
+      const result = await client.query(queryText, [resource_uuid]);
+
+      if (result && result.rows.length > 0) {
+        for (const row of result.rows) {
+          let fault: InterscityFault | null = null;
+
+          switch (row.type_of_error) {
+            case 'bias':
+              fault = new InterscityFault(
+                row.resource_uuid,
+                new Bias(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                parseFloat(row.intensity),
+                parseFloat(row.temperature_value),
+                parseFloat(row.humidity_value),
+              );
+              break;
+            case 'drift':
+              fault = new InterscityFault(
+                row.resource_uuid,
+                new Drift(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                parseFloat(row.intensity),
+                parseFloat(row.temperature_value),
+                parseFloat(row.humidity_value),
+              );
+              break;
+            case 'loss accuracy':
+              fault = new InterscityFault(
+                row.resource_uuid,
+                new LossAccuracy(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                parseFloat(row.intensity),
+                parseFloat(row.temperature_value),
+                parseFloat(row.humidity_value),
+              );
+              break;
+            case 'calibration error':
+              fault = new InterscityFault(
+                row.resource_uuid,
+                new CalibrationError(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                parseFloat(row.intensity),
+                parseFloat(row.temperature_value),
+                parseFloat(row.humidity_value),
+              );
+              break;
+            case 'freezing':
+              fault = new InterscityFault(
+                row.resource_uuid,
+                new Freezing(),
+                row.sensor_date,
+                row.initial_date,
+                row.final_date,
+                parseFloat(row.intensity),
+                parseFloat(row.temperature_value),
+                parseFloat(row.humidity_value),
+              );
+              break;
+            default:
+              console.warn('Unknown error type:', row.type_of_error);
+          }
+
+          if (fault) {
+            faults.push(fault);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to retrieve error:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+
+    return faults;
+  }
+
+  static async deleteByResourceUUID(resource_uuid: string): Promise<void> {
+    const client = await pool.connect();
+
+    try {
+      const queryText = 'DELETE FROM interscity_fault WHERE resource_uuid = $1';
+      await client.query(queryText, [resource_uuid]);
+    } catch (error) {
+      console.error('Failed to delete faults:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
 }
